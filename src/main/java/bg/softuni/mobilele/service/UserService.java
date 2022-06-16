@@ -3,6 +3,7 @@ package bg.softuni.mobilele.service;
 import bg.softuni.mobilele.model.dto.UserLoginDTO;
 import bg.softuni.mobilele.model.dto.UserRegisterDTO;
 import bg.softuni.mobilele.model.entity.UserEntity;
+import bg.softuni.mobilele.model.mapper.UserMapper;
 import bg.softuni.mobilele.repository.UserRepository;
 import bg.softuni.mobilele.user.CurrentUser;
 import org.slf4j.Logger;
@@ -20,27 +21,24 @@ public class UserService {
 
     private CurrentUser currentUser;
     private PasswordEncoder passwordEncoder;
+    private UserMapper userMapper;
 
-    public  UserService(UserRepository userRepository, CurrentUser currentUser, PasswordEncoder passwordEncoder){
+    public  UserService(UserRepository userRepository,
+                        CurrentUser currentUser,
+                        PasswordEncoder passwordEncoder,
+                        UserMapper userMapper){
         this.userRepository = userRepository;
         this.currentUser = currentUser;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
-    public String registerAndLogin(UserRegisterDTO userRegisterDTO){
-        UserEntity newUser =
-                new UserEntity().
-                        setActive(true).
-                        setEmail(userRegisterDTO.getEmail()).
-                        setFirstName(userRegisterDTO.getFirstName()).
-                        setLastName(userRegisterDTO.getLastName()).
-                        setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+    public void registerAndLogin(UserRegisterDTO userRegisterDTO){
+        UserEntity newUser = userMapper.userDtoToUserEntity(userRegisterDTO);
+        newUser.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
 
-       newUser = userRepository.save(newUser);
-
-       login(newUser);
-
-       return "redirect:/";
+            newUser = userRepository.save(newUser);
+            login(newUser);
     }
 
     public boolean login(UserLoginDTO loginDTO){
