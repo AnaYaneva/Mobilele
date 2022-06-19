@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
-@Table(name = "brands")
+@Table(name = "offers")
 public class OfferEntity {
 
     @Id
@@ -46,7 +46,7 @@ public class OfferEntity {
     private ModelEntity model;
 
     @ManyToOne
-    private ModelEntity seller;
+    private UserEntity seller;
 
     public UUID getId() {
         return id;
@@ -120,11 +120,11 @@ public class OfferEntity {
         return this;
     }
 
-    public ModelEntity getSeller() {
+    public UserEntity getSeller() {
         return seller;
     }
 
-    public OfferEntity setSeller(ModelEntity seller) {
+    public OfferEntity setSeller(UserEntity seller) {
         this.seller = seller;
         return this;
     }
